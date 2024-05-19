@@ -1,5 +1,6 @@
 # this is a set of codes with custom_taxi_env.py
-self.passenger_locations = [(0, 0), (0, 4), (4, 0), (4, 3), (2, 2)]  # add one Extra passenger location (2, 2)
+added one Extra passenger location (2, 2): self.passenger_locations = [(0, 0), (0, 4), (4, 0), (4, 3), (2, 2)]  
+
 wall numbers I'm not sure how many in original environment, but in this custom_taxi_env.py only 3 walls:  self.walls = [(1, 2), (2, 2), (3, 2)]  # Example walls
 
 execution order will be the same
