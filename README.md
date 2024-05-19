@@ -1,8 +1,8 @@
-# q-learning-taxi-v3
+# this is a set of codes with custom_taxi_env.py
+self.passenger_locations = [(0, 0), (0, 4), (4, 0), (4, 3), (2, 2)]  # add one Extra passenger location (2, 2)
+wall numbers I'm not sure how many in original environment, but in this custom_taxi_env.py only 3 walls:  self.walls = [(1, 2), (2, 2), (3, 2)]  # Example walls
 
-Table based q-learning implementation for taxi-v3 environment of Open AI gym.
-
-Read the tutorial here [https://www.learndatasci.com/tutorials/reinforcement-q-learning-scratch-python-openai-gym/](https://www.learndatasci.com/tutorials/reinforcement-q-learning-scratch-python-openai-gym/)
+execution order will be the same
 
 ## Instructions to run
 
@@ -35,7 +35,3 @@ Options:
   --help                  Show this message and exit.
 ```
 
-##  Similar projects
-
-- [https://github.com/satwikkansal/smartcab](https://github.com/satwikkansal/smartcab)
-- [https://github.com/satwikkansal/snakepy](https://github.com/satwikkansal/snakepy)
