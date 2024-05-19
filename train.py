@@ -1,7 +1,7 @@
 from collections import defaultdict
 import pickle
 import random
-
+import custom_taxi_env
 import click
 import gym
 
@@ -12,7 +12,7 @@ alpha = 0.1
 gamma = 0.6
 epsilon = 0.1
 
-NUM_EPISODES = 100000
+NUM_EPISODES = 10000
 
 
 def update(q_table, env, state):
@@ -71,7 +71,7 @@ def train_agent(q_table, env, num_episodes):
 @click.option('--num-episodes', default=NUM_EPISODES, help='Number of episodes to train on', show_default=True)
 @click.option('--save-path', default="q_table.pickle", help='Path to save the Q-table dump', show_default=True)
 def main(num_episodes, save_path):
-    env = gym.make("Taxi-v3")
+    env = gym.make("CustomTaxi-v0")
     q_table = defaultdict(int, {})
     q_table = train_agent(q_table, env, num_episodes)
     # save the table for future use
