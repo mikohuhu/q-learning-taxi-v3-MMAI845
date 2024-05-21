@@ -1,9 +1,9 @@
 import gym
 import heapq
 
-def a_star_search(env):
-    initial_state = env.reset()
-    priority_queue = [(0, initial_state, [], 0, 0)]  # (cost, state, path, total_reward, total_penalties)
+
+def a_star_search(env, state, render=False):
+    priority_queue = [(0, state, [], 0, 0)]  # (cost, state, path, total_reward, total_penalties)
     visited = set()
 
     while priority_queue:
@@ -14,11 +14,16 @@ def a_star_search(env):
 
         for action in range(env.action_space.n):
             env.env.s = state  # Set the environment to the current state
+            if render:
+                env.render()  # Render the environment
+
             next_state, reward, done, _ = env.step(action)
             new_penalties = total_penalties + (1 if reward == -10 else 0)
             if done:
-                # print(f"A* Path: {path + [action]}, Total Reward: {total_reward + reward}, Total Penalties: {new_penalties}")
-                return path + [action], total_reward + reward, new_penalties
+                if render:
+                    env.render()  # Render the environment on reaching the goal state
+                return action, next_state, total_reward + reward, new_penalties
             if next_state not in visited:
                 heapq.heappush(priority_queue, (cost + reward, next_state, path + [action], total_reward + reward, new_penalties))
-    return path, total_reward, total_penalties
+
+    return action, state, total_reward, total_penalties

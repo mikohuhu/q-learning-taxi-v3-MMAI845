@@ -2,7 +2,7 @@ import gym
 import numpy as np
 import pickle
 
-def train_q_learning(env, episodes, alpha=0.1, gamma=0.99, epsilon=1.0, epsilon_decay=0.995, epsilon_min=0.1):
+def train_q_learning(env, episodes, alpha=0.1, gamma=0.99, epsilon=1.0, epsilon_decay=0.995, epsilon_min=0.1, render=False):
     q_table = np.zeros([env.observation_space.n, env.action_space.n])
     all_rewards = []
     all_penalties = []
@@ -14,6 +14,9 @@ def train_q_learning(env, episodes, alpha=0.1, gamma=0.99, epsilon=1.0, epsilon_
         done = False
 
         while not done:
+            if render:
+                env.render()
+
             if np.random.uniform(0, 1) < epsilon:
                 action = env.action_space.sample()  # Explore action space
             else:
@@ -40,8 +43,9 @@ def train_q_learning(env, episodes, alpha=0.1, gamma=0.99, epsilon=1.0, epsilon_
         all_penalties.append(penalties)
         all_timesteps.append(timesteps)
 
-        # if (episode + 1) % 100 == 0:
-        #     print(f"Episode: {episode + 1}, Average Reward: {np.mean(all_rewards[-100:])}, Average Penalties: {np.mean(all_penalties[-100:])}, Average Timesteps: {np.mean(all_timesteps[-100:])}")
+        if render:
+            env.render()
+            print(f"Episode: {episode + 1}, Reward: {rewards}, Penalties: {penalties}, Timesteps: {timesteps}")
 
     with open('q_table.pickle', 'wb') as f:
         pickle.dump(q_table, f)
@@ -52,14 +56,15 @@ if __name__ == "__main__":
     env_name = "Taxi-v3"
     env = gym.make(env_name)
     episodes = 10000  # Increase the number of episodes for better training
+    render_training = False  # Set this to True to enable rendering
 
-    q_table, rewards, penalties, timesteps = train_q_learning(env, episodes)
+    q_table, rewards, penalties, timesteps = train_q_learning(env, episodes, render=render_training)
 
     # Evaluate the trained Q-learning agent
     average_reward = np.mean(rewards)
     average_timesteps = np.mean(timesteps)
     average_penalties = np.mean(penalties)
 
-    # print(f"Q-learning Average Rewards: {average_reward}")
-    # print(f"Q-learning Average Timesteps taken: {average_timesteps}")
-    # print(f"Q-learning Average Penalties incurred: {average_penalties}")
+    print(f"Q-learning Average Rewards: {average_reward}")
+    print(f"Q-learning Average Timesteps taken: {average_timesteps}")
+    print(f"Q-learning Average Penalties incurred: {average_penalties}")
