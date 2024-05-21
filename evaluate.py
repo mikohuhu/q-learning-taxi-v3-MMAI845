@@ -1,51 +1,38 @@
-import pickle
-
-
 import click
 import gym
+import numpy as np
+import pickle
+from BFS_search import bfs_search
+from Astar_search import a_star_search
+from eval import evaluate_algorithm, evaluate_q_learning
 
-from utils import select_optimal_action
-
-
-NUM_EPISODES = 100
-
-
-def evaluate_agent(q_table, env, num_trials):
-    total_epochs, total_penalties = 0, 0
-
-    print("Running episodes...")
-    for _ in range(num_trials):
-        state = env.reset()
-        epochs, num_penalties, reward = 0, 0, 0
-
-        while reward != 20:
-            next_action = select_optimal_action(q_table,state)
-            state, reward, _, _ = env.step(next_action)
-
-            if reward == -10:
-                num_penalties += 1
-
-            epochs += 1
-
-        total_penalties += num_penalties
-        total_epochs += epochs
-
-    average_time = total_epochs / float(num_trials)
-    average_penalties = total_penalties / float(num_trials)
-    print("Evaluation results after {} trials".format(num_trials))
-    print("Average time steps taken: {}".format(average_time))
-    print("Average number of penalties incurred: {}".format(average_penalties))
-
+# Load the trained q-table
+with open('q_table.pickle', 'rb') as f:
+    q_table = pickle.load(f)
 
 @click.command()
-@click.option('--num-episodes', default=NUM_EPISODES, help='Number of episodes to train on', show_default=True)
-@click.option('--q-path', default="q_table.pickle", help='Path to read the q-table values from', show_default=True)
-def main(num_episodes, q_path):
-    env = gym.make("Taxi-v3")
-    with open(q_path, 'rb') as f:
-        q_table = pickle.load(f)
-    evaluate_agent(q_table, env, num_episodes)
+@click.option('--env_name', default="Taxi-v3", help='Gym environment name')
+@click.option('--episodes', default=100, help='Number of episodes to run')
+def evaluate_agent(env_name, episodes):
+    env = gym.make(env_name)
 
+    print("Evaluating BFS:")
+    bfs_average_timesteps, bfs_average_rewards, bfs_average_penalties = evaluate_algorithm(env, bfs_search, episodes)
+    print("BFS Average Timesteps taken: {}".format(bfs_average_timesteps))
+    print("BFS Average Rewards: {}".format(bfs_average_rewards))
+    print("BFS Average Penalties: {}".format(bfs_average_penalties))
 
-if __name__ == "__main__":
-    main()
+    print("Evaluating A*:")
+    a_star_average_timesteps, a_star_average_rewards, a_star_average_penalties = evaluate_algorithm(env, a_star_search, episodes)
+    print("A* Average Timesteps taken: {}".format(a_star_average_timesteps))
+    print("A* Average Rewards: {}".format(a_star_average_rewards))
+    print("A* Average Penalties: {}".format(a_star_average_penalties))
+
+    print("Evaluating Q-learning:")
+    q_learning_avg_rewards, q_learning_avg_timesteps, q_learning_avg_penalties = evaluate_q_learning(env, q_table, episodes)
+    print("Q-learning Average Rewards: {}".format(q_learning_avg_rewards))
+    print("Q-learning Average Timesteps taken: {}".format(q_learning_avg_timesteps))
+    print("Q-learning Average Penalties incurred: {}".format(q_learning_avg_penalties))
+
+if __name__ == '__main__':
+    evaluate_agent()
