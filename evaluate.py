@@ -1,5 +1,5 @@
 import pickle
-
+import custom_taxi_env
 
 import click
 import gym
@@ -7,7 +7,7 @@ import gym
 from utils import select_optimal_action
 
 
-NUM_EPISODES = 100
+NUM_EPISODES = 10
 
 
 def evaluate_agent(q_table, env, num_trials):
@@ -41,7 +41,7 @@ def evaluate_agent(q_table, env, num_trials):
 @click.option('--num-episodes', default=NUM_EPISODES, help='Number of episodes to train on', show_default=True)
 @click.option('--q-path', default="q_table.pickle", help='Path to read the q-table values from', show_default=True)
 def main(num_episodes, q_path):
-    env = gym.make("Taxi-v3")
+    env = gym.make("CustomTaxi-v0")
     with open(q_path, 'rb') as f:
         q_table = pickle.load(f)
     evaluate_agent(q_table, env, num_episodes)
