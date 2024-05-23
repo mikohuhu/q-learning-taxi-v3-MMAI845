@@ -71,11 +71,10 @@ if __name__ == "__main__":
         print("Step {}".format(s+1))
 
         action = np.argmax(q_table[state])
-        new_state, reward, done, _ = env.step(action)
+        state, reward, done, _ = env.step(action)
         rewards += reward
         env.render()
         print(f"score: {rewards}")
-        state = new_state
         time.sleep(1)  # Slow down the rendering for better visualization
 
         if done:

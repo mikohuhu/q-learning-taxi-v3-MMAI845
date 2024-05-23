@@ -7,7 +7,7 @@ class CustomTaxiEnv(gym.Env):
     def __init__(self):
         super(CustomTaxiEnv, self).__init__()
         self.action_space = spaces.Discrete(6)  # 6 possible actions: 4 movements, pickup, dropoff
-        self.observation_space = spaces.Discrete(100)  # Reduced observation space for better visualization
+        self.observation_space = spaces.Discrete(10000)  # 10x10 grid, 5 passenger locations, simplified state space for demo
 
         self.passenger_locations = [(0, 0), (0, 9), (9, 0), (9, 8), (5, 5)]  # Extra passenger locations
         self.destination = (9, 9)
@@ -25,14 +25,13 @@ class CustomTaxiEnv(gym.Env):
                 break
 
         self.passenger_index = np.random.randint(len(self.passenger_locations))
-        self.state = (self.taxi_position, self.passenger_locations[self.passenger_index])
+        self.state = (self.taxi_position, self.passenger_index)
         return self.encode(self.state)
 
     def encode(self, state):
-        # Simplified encoding for demonstration
         taxi_row, taxi_col = state[0]
-        pass_loc_index = self.passenger_locations.index(state[1])
-        return taxi_row * 10 + taxi_col * 5 + pass_loc_index
+        pass_loc_index = state[1]
+        return taxi_row * 100 + taxi_col * 10 + pass_loc_index
 
     def step(self, action):
         taxi_row, taxi_col = self.taxi_position
@@ -57,25 +56,33 @@ class CustomTaxiEnv(gym.Env):
             reward = 20  # Reward for reaching the destination
             done = True
 
-        self.state = (self.taxi_position, self.passenger_locations[self.passenger_index])
+        self.state = (self.taxi_position, self.passenger_index)
         return self.encode(self.state), reward, done, {}
 
-    def render(self, mode='human', close=False):
+    def render(self, mode='human'):
         if mode == 'human':
             out = np.array([[' ' for _ in range(10)] for _ in range(10)])
-            out[tuple(zip(*self.walls))] = 'W'  # Mark walls
+            for (i, j) in self.walls:
+                out[i][j] = '|'
+
             taxi_row, taxi_col = self.taxi_position
-            out[taxi_row][taxi_col] = 'T'  # Mark taxi
-            for i, loc in enumerate(self.passenger_locations):
-                if i == self.passenger_index:
-                    out[loc] = 'P'  # Mark passenger
-            print("\n".join(["".join(row) for row in out]))
-            time.sleep(0.5)  # Adjust the delay between frames if needed
+            out[taxi_row][taxi_col] = 'T'
+
+            pass_row, pass_col = self.passenger_locations[self.passenger_index]
+            out[pass_row][pass_col] = 'P'
+
+            dest_row, dest_col = self.destination
+            out[dest_row][dest_col] = 'D'
+
+            print("+---------+")
+            for row in out:
+                print("|" + "".join(row) + "|")
+            print("+---------+")
+            time.sleep(1)
         else:
             super(CustomTaxiEnv, self).render(mode=mode)  # Render using default behavior
 
-    # Register the custom environment (do this outside the class, in your script or a main block)
-
+# Register the custom environment (do this outside the class, in your script or a main block)
 gym.envs.registration.register(
     id='CustomTaxi-v0',
     entry_point='custom_taxi_env:CustomTaxiEnv',
