@@ -1,3 +1,5 @@
+#Customized Environment Qlearning Training, default parameters
+
 import gym
 import numpy as np
 import pickle

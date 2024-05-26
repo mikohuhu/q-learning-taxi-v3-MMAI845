@@ -1,30 +1,5 @@
-# import gym
-# from gym import spaces
-# import numpy as np
-#
-# class CustomTaxiEnv(gym.Env):
-#     def __init__(self):
-#         super(CustomTaxiEnv, self).__init__()
-#         self.action_space = spaces.Discrete(6)  # 6 possible actions: 4 movements, pickup, dropoff
-#         self.observation_space = spaces.Discrete(6400)  # 8x8 grid, 5 passenger locations, simplified state space for demo
-#
-#         self.passenger_locations = [(0, 0), (0, 7), (7, 0), (7, 6), (4, 4)]  # Extra passenger locations
-#         self.destination = (7, 7)
-#         self.walls = [(1, 2), (2, 2), (3, 2), (4, 2), (5, 2), (5, 3), (5, 4)]  # Example walls
-#
-#         self.state = None
-#         self.taxi_position = None
-#         self.passenger_index = None
-#
-#     def reset(self):
-#         while True:
-#             self.taxi_position = (np.random.randint(8), np.random.randint(8))
-#             if self.taxi_position not in self.walls:
-#                 break
-#
-#         self.passenger_index = np.random.randint(len(self.passenger_locations))
-#         self.state = (self.taxi_position, self.passenger_locations[self.passenger_index])
-#         return self.encode(self.state)
+# customized environment setup
+# #10 by 10 grid size and additional locations environment for experiment phrase 2
 
 #10 by 10
 import gym
@@ -113,53 +88,3 @@ gym.envs.registration.register(
     entry_point='custom_taxi_env:CustomTaxiEnv',
 )
 
-
-
-# Diff in Summary
-
-# 1. **Action and Observation Spaces:**
-#    - CustomTaxiEnv:
-#      - Action space: `Discrete(6)` representing 6 possible actions.
-#      - Observation space: `Discrete(10000)` corresponding to a 10x10 grid.
-#    - Taxi-v3:
-#      - Action space: `Discrete(6)` representing 6 possible actions.
-#      - Observation space: `Discrete(500)` corresponding to a 5x5 grid.
-#
-# 2. **Passenger Locations and Destination:**
-#    - CustomTaxiEnv:
-#      - Additional passenger locations: 5 locations defined.
-#      - Single destination location.
-#    - Taxi-v3:
-#      - Predefined passenger location and destination.
-#
-# 3. **Walls:**
-#    - CustomTaxiEnv:
-#      - 14 wall locations defined.
-#    - Taxi-v3:
-#      - Predefined wall layout.
-#
-# 4. **State Encoding:**
-#    - CustomTaxiEnv:
-#      - State encoded into a single integer using a custom method.
-#    - Taxi-v3:
-#      - States represented as integers corresponding to different configurations.
-#
-# 5. **Grid Size:**
-#    - CustomTaxiEnv: 10x10 grid.
-#    - Taxi-v3: 5x5 grid.
-#
-# 6. **Reset and Step Methods:**
-#    - CustomTaxiEnv: Custom reset and step methods implemented.
-#    - Taxi-v3: Default reset and step methods provided.
-#
-# 7. **Rendering:**
-#    - CustomTaxiEnv: Custom rendering method defined.
-#    - Taxi-v3: Default rendering capabilities available.
-#
-# 8. **Registration:**
-#    - CustomTaxiEnv: Registered as a custom environment with Gym.
-#    - Taxi-v3: Default Taxi environment registered with Gym.
-#
-# These specifics highlight the numerical differences between the custom environment and the default
-# Taxi-v3 environment, providing a clearer comparison in terms of action and observation spaces,
-# environment layout, and implementation details.
